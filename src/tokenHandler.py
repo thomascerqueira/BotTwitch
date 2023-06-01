@@ -3,31 +3,24 @@ import requests
 import webbrowser
 
 class TokenHandler:
-    TwitchNick = ""
-    TwitchChannel = ""
-    Prefix = ""
-    
-    def __init__(self):
-        self.url_token = "https://id.twitch.tv/oauth2/token"
-        self.url_authorize = "https://id.twitch.tv/oauth2/authorize"
+    def __init__(self, url_token, url_authorize, scope, client_id, client_secret, redirect_uri, name):
+        self.url_token = url_token
+        self.url_authorize = url_authorize
         self.authorization_code = ""
-        self.scope = "channel:moderate+chat:edit+chat:read"
-        self.client_id = os.getenv("CLIENT_ID")
-        self.client_secret = os.getenv("CLIENT_SECRET")
-        TokenHandler.TwitchNick = os.getenv("TWITCH_NICK")
-        TokenHandler.TwitchChannel = os.getenv("TWITCH_CHANNEL")
-        TokenHandler.Prefix = os.getenv("BOT_PREFIX")
-
+        self.scope = scope
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.redirect_uri = redirect_uri
+        self.name = name
         self.tokens = ""
         self.refresh_token = ""
         self.getToken()
     
     def getCode(self):
-        url = f"https://id.twitch.tv/oauth2/authorize?client_id={self.client_id}&redirect_uri=http://localhost:3000&response_type=code&scope={self.scope}"
+        url = f"{self.url_authorize}?client_id={self.client_id}&redirect_uri={self.redirect_uri}&response_type=code&scope={self.scope}"
 
         webbrowser.open(url)
-        self.authorization_code = input("Enter the code: ")
-        print(self.authorization_code)
+        self.authorization_code = input(f"Enter the code for {self.name}: ")
         
     def refreshToken(self):
         params = {
@@ -36,20 +29,28 @@ class TokenHandler:
             "client_id": self.client_id,
             "client_secret": self.client_secret
         }
-        r = requests.post(self.url_token, params=params)
+        r = requests.post(self.url_token, data=params)
+        
+        if (r.status_code != 200):
+                print(f"Error while refreshing {self.name} token")
+                print(r.status_code)
+                exit(-1)
         self.refresh_token = r.json()["refresh_token"]
         self.tokens = r.json()['access_token']
         self.saveRefreshToken()
         
     def saveRefreshToken(self):
-        with open("refresh_token.txt", "w") as f:
+        if not os.path.isdir("tokens"):
+            os.mkdir("tokens")
+        
+        with open(f"tokens/{self.name}_token.txt", "w") as f:
             f.write(self.refresh_token)
             
     def loadRefreshToken(self):
-        if not os.path.isfile("refresh_token.txt"):
+        if not os.path.isfile(f"tokens/{self.name}_token.txt"):
             return False
         
-        with open("refresh_token.txt", "r") as f:
+        with open(f"tokens/{self.name}_token.txt", "r") as f:
             self.refresh_token = f.read()
             return True
 
@@ -63,10 +64,17 @@ class TokenHandler:
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
                 "grant_type": "authorization_code",
-                "redirect_uri": "http://localhost:3000",
+                "redirect_uri": self.redirect_uri,
                 "code": self.authorization_code
             }
-            r = requests.post(self.url_token, params=params)
+            r = requests.post(self.url_token, data=params)
+            
+            if (r.status_code != 200):
+                print(f"Error while getting {self.name} token you can find information in the file {self.name}_token_error.txt\nExiting...")
+                with open(f"{self.name}_token_error.txt", "w") as f:
+                    f.write(r.text)
+                print(r.status_code)
+                exit(-1)
             self.refresh_token = r.json()["refresh_token"]
             self.tokens = r.json()['access_token']
             self.saveRefreshToken()
