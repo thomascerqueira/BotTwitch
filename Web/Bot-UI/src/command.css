@@ -1,0 +1,51 @@
+.commands {
+    width: 100%;
+}
+
+.commands .header,
+.commands .body .command {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    text-align: center;
+}
+
+.commands .header .command
+{
+    text-align: left !important;
+}
+
+.commands .body .command {
+    margin-top: 1em;
+}
+
+.commands .body .command * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.commands .body .command > .function {
+    justify-content: left;
+}
+
+.args {
+    flex-direction: column;
+}
+
+.args > .arg {
+    display: flex;
+    justify-content: center;
+}
+
+/* Colorise */
+.commands .body > .command > .function {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.commands .body > .command > .description {
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.commands .body > .command > .args {
+    background-color: rgba(0, 0, 255, 0.2);
+}
