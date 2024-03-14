@@ -1,4 +1,4 @@
-import "./Command.css"
+import "./command.css"
 
 interface ICommand {
   function: string,
