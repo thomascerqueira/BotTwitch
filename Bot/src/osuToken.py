@@ -6,7 +6,14 @@ class OsuToken(TokenHandler):
     Secret = ""
     Id = ""
     
+    envNeeded = ["OSU_CLIENT_ID", "OSU_CLIENT_SECRET"]
+    
     def __init__(self, username, id=False):
+        for env in OsuToken.envNeeded:
+            if not os.getenv(env):
+                print(f"Environment variable {env} is missing")
+                exit(-1)
+        
         super().__init__(
             "https://osu.ppy.sh/oauth/token",
             "https://osu.ppy.sh/oauth/authorize",

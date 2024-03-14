@@ -15,22 +15,22 @@ class ParserTwitch():
         return dictionnary
     
     def parse(self, message):
-        print(f"\nMessage avant de split {message}")
+        print(f"Message avant de split {message}")
         messages = message.strip().split(":")
-        print("Messages splités: ")
+        # print("Messages splités: ")
         result = {}
-        for m in messages:
-            print(f"\t{m}")
+        # for m in messages:
+            # print(f"\t{m}")
         
         if messages[0].startswith('@'):
             infos = messages[0].split(";")
             infosDictionnary = self.createDictionnaryFromInfo(infos)
-            print("\tInfos from dictionnary: ")
-            for k, v in infosDictionnary.items():
-                print(f"\t\t{k}: {v}")
+            # print("\tInfos from dictionnary: ")
+            # for k, v in infosDictionnary.items():
+                # print(f"\t\t{k}: {v}")
             
             command = messages[1].split(" ")[1]
-            print(f"\t\tCommande: {command}")
+            # print(f"\t\tCommande: {command}")
             result = {**infosDictionnary, **{"command": command}}
         else:
             messages = messages[1:]
@@ -40,7 +40,7 @@ class ParserTwitch():
                 command = splited[1]
             else:
                 command = splited[0]
-            print(f"\t\tCommande: {command}")
+            # print(f"\t\tCommande: {command}")
             
             result["command"] = command
         

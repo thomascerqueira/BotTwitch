@@ -6,7 +6,14 @@ class TwitchToken(TokenHandler):
     Channel = ""
     Prefix = ""
     
+    envNeeded = ["CLIENT_ID", "CLIENT_SECRET", "TWITCH_NICK", "TWITCH_CHANNEL", "BOT_PREFIX"]
+    
     def __init__(self):
+        for env in TwitchToken.envNeeded:
+            if not os.getenv(env):
+                print(f"Environment variable {env} is missing")
+                exit(-1)
+        
         super().__init__(
             "https://id.twitch.tv/oauth2/token",
             "https://id.twitch.tv/oauth2/authorize", 

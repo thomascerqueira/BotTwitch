@@ -14,6 +14,7 @@ class TokenHandler:
         self.name = name
         self.tokens = ""
         self.refresh_token = ""
+
         self.getToken()
     
     def getCode(self):

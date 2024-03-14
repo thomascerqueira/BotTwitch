@@ -3,10 +3,9 @@ from src.osuToken import OsuToken
 from src.parserTwitch import ParserTwitch
 import os
 import websocket
-from src.commands import commandesFunctions
-
 class Bot():
     def __init__(self, twitchToken: TwitchToken, osuToken: OsuToken = None):
+        print("Initialisation du bot")
         self.twitchToken: TwitchToken = twitchToken
         self.osuToken: OsuToken = osuToken
         self.parser: ParserTwitch = ParserTwitch()
@@ -15,7 +14,7 @@ class Bot():
         self.url = f"wss://irc-ws.chat.twitch.tv:443"
         
         self.connectToTwitch()
-        
+
     def connectToTwitch(self):
         self.ws = websocket.WebSocketApp(self.url,
                                     on_message=self.onMessage,
@@ -32,12 +31,15 @@ class Bot():
         socket.send(f"CAP REQ :twitch.tv/commands twitch.tv/tags")
     
     def sendMessage(self, socket, message):
+        print(f"Envoi du message: {message}")
         message = f"PRIVMSG #{self.twitchToken.Channel} :{message}"
         socket.send(message)
         
     def dispatchCommand(self, message):
-        if commandesFunctions.get(message["command"]):
-            commandesFunctions[message["command"]](self.ws, message, osuToken=self.osuToken)
+        import src.command
+        
+        if src.command.commandesFunctions.get(message["command"]):
+            src.command.commandesFunctions[message["command"]](self.ws, message, osuToken=self.osuToken)
         else:
             print(f"Commande {message['command']} non reconnue")
     
@@ -48,7 +50,7 @@ class Bot():
         
     def onError(self, socket, error):
         print(f"Erreur dans la connexion au chat Twitch: {error}")
-    
+
     
     def onClose(self, socket, close_status_code, close_msg):
         print("Connexion au chat Twitch fermée")

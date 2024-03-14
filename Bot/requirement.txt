@@ -1,2 +1,5 @@
 python-dotenv
+requests
 websocket-client
+testresources
+six

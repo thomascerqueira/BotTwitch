@@ -15,6 +15,7 @@ if __name__ == "__main__":
     
     print("Lancement du bot")
     twitchToken = TwitchToken()
+    print("Token Twitch récupéré")
     osuToken = None
     
     osuUsername = args.osu
