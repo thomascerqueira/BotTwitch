@@ -24,5 +24,6 @@ jobs:
       
       - name: Create tag
         run: |
+          echo "Creating tag $TAG"
           git tag $TAG
           git push origin --tags
