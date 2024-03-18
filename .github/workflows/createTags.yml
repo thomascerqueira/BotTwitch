@@ -16,6 +16,10 @@ jobs:
         run: |
           export TAG=$(head CHANGELOG.md -n1 | sed -e 's/^# \[\([0-9.]\+\)\].*$/\1/g')
           echo "Version tag: $TAG"
+
+      - name: Get latest commit hash
+        id: get_commit_hash
+        run: echo ::set-output name=COMMIT_HASH::$(git rev-parse --short HEAD)
       
       - name: Config git
         run: |
@@ -24,5 +28,5 @@ jobs:
       
       - name: Create tag
         run: |
-          git tag -a $TAG -m $CI_COMMIT_SHA -m "Release v$TAG"
+          git tag -a $TAG v${{ steps.get_commit_hash.outputs.COMMIT_HASH }} -m "Release v$TAG"
           git push origin --tags
