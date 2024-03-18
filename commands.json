@@ -1,0 +1,14 @@
+{
+    "!osu": {
+        "description": "Displays the osu! profile of the specified user.",
+        "file": "/home/thomas/perso/BotTwitch/Bot/src/commands/osuRank.py"
+    },
+    "!test": {
+        "description": "Test command",
+        "file": "/home/thomas/perso/BotTwitch/Bot/src/commands/print.py",
+        "data": {
+            "message": "Test command",
+            "helpMessage": "Print a test message"
+        }
+    }
+}

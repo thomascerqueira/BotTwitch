@@ -4,6 +4,7 @@ REPLAY_PARENT = "@reply-parent-msg-id"
 
 class CommandHandler():
     def Pong(ws, _):
+        print("Ping received, sending pong...")
         ws.send("PONG :tmi.twitch.tv")
 
     def replyWithUsername(ws, message, username):
@@ -32,9 +33,17 @@ class CommandHandler():
         message = info["message"]
         id = info["id"]
         username = info["display-name"]
-
+        badges = info["badges"]
+        bot = kwargs.get("bot", None)
+        
         print(f"Message reçu: {info['message']}")
         if (message.startswith(TwitchToken.Prefix)):
             specialCommand = message.split(" ")[0]
 
-            CommandHandler.dispatchSpecialCommand(ws, specialCommand, message, username=username, osuToken=kwargs["osuToken"])
+            CommandHandler.dispatchSpecialCommand(ws,
+                                                  specialCommand,
+                                                  message,
+                                                  username=username,
+                                                  osuToken=kwargs["osuToken"],
+                                                  badges=badges,
+                                                  bot=bot)

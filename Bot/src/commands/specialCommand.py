@@ -1,5 +1,5 @@
 class SpecialCommand():
-    def __init__(self):
+    def __init__(self, **kwargs):
         pass
     
     def help(self):

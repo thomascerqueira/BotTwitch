@@ -2,7 +2,7 @@ from src.commands.specialCommand import SpecialCommand
 from src.twitchToken import TwitchToken
 
 class PrintHelp(SpecialCommand):
-    def __init__(self):
+    def __init__(self, **kwargs):
         pass
     
     def help(self):
@@ -12,10 +12,11 @@ class PrintHelp(SpecialCommand):
         import src.command as Command
         from src.commands.commandHandler import CommandHandler
         
-        print(f"Execiuting prtin help")
-        
         splitted = message.split(" ")
-        commands = ", ".join(list(Command.specialCommand.keys()))
+        keys = list(Command.specialCommand.keys())
+        keys.remove("!reload")
+
+        commands = ", ".join(keys)
         
         if len(splitted) == 1:
             CommandHandler.replyWithUsername(ws, f"Commands disponibles: {commands}", kwargs["username"])

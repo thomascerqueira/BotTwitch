@@ -3,7 +3,7 @@ from src.twitchToken import TwitchToken
 from requests import Response
 
 class OsuRank(SpecialCommand):
-    def __init__(self):
+    def __init__(self, **kwargs):
         pass
     
     def help(self):
@@ -27,5 +27,3 @@ class OsuRank(SpecialCommand):
                     "country": statistics.get("country_rank"),
                 }
                 CommandHandler.replyWithUsername(ws, f"Le rank de {TwitchToken.Channel} est {rank.get('global')} global et {rank.get('country')} en {country}", kwargs["username"])
-        else:
-           CommandHandler.replyWithUsername(ws, f"Pas de compte osu !", kwargs["username"])
