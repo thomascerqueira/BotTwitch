@@ -16,7 +16,8 @@ jobs:
         id: get_version_tag
         run: |
           export TAG=$(head CHANGELOG.md -n1 | sed -e 's/^# \[\([0-9.]\+\)\].*$/\1/g')
-      
+          echo "::set-output name=TAG::$TAG"  # Définition de la sortie TAG
+    
       - name: Config git
         run: |
           git config --local user.email "action@github.com"
