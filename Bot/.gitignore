@@ -4,3 +4,4 @@ refresh_token.txt
 node
 .DS_Store
 tokens
+log
