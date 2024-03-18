@@ -15,8 +15,8 @@ jobs:
       - name: Get Version tag
         id: get_version_tag
         run: |
-          export TAG=$(head CHANGELOG.md -n1 | sed -e 's/^# \[\([0-9.]\+\)\].*$/\1/g')
-          echo "::set-output name=TAG::$TAG"  # Définition de la sortie TAG
+          TAG=$(head CHANGELOG.md -n1 | sed -e 's/^# \[\([0-9.]\+\)\].*$/\1/g')
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
     
       - name: Config git
         run: |
@@ -25,7 +25,6 @@ jobs:
       
       - name: Create tag
         run: |
-          echo Creating tag
-          echo $TAG
-          git tag $TAG
+          TAG=${{ steps.get_version_tag.outputs.TAG }}
+          git tag "$TAG"
           git push origin --tags
