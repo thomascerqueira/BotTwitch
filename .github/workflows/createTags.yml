@@ -1,0 +1,28 @@
+name: Create a tag on push on main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Version tag
+        run: |
+          export TAG=$(head CHANGELOG.md -n1 | sed -e 's/^# \[\([0-9.]\+\)\].*$/\1/g')
+          echo "Version tag: $TAG"
+      
+      - name: Config git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      
+      - name: Create tag
+        run: |
+          git tag -a $TAG -m $CI_COMMIT_SHA -m "Release v$TAG"
+          git push origin --tags
