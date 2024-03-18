@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-
+from typing import Dict
 from logging import DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 
@@ -52,7 +52,7 @@ class Logger():
         print(f"Creating logger for {name}")
         
         self.baseLoggerName = name
-        self.loggers = {}
+        self.loggers: Dict[str, logging.Logger] = {}
         
         self.loggers[name] = logging.getLogger(name)
         self.loggers[name].setLevel(self.DEBUG_LEVEL)
