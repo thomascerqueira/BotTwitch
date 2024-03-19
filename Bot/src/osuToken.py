@@ -44,6 +44,9 @@ class OsuToken(TokenHandler):
             data=data
             )
         
+        if (r.status_code == 401):
+            return self.makeRequest(type, url, headers, params, data)
+        
         if (r.status_code != 200):
             print(r.text)
         return r

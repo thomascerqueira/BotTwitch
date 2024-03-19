@@ -16,6 +16,10 @@ class ParserTwitch():
     
     def parse(self, message):
         print(f"Message avant de split {message}")
+        if message.startswith("PING"):
+            result = {"command": "PING"}
+            return result
+        
         messages = message.strip().split(":")
         # print("Messages splités: ")
         result = {}

@@ -3,7 +3,7 @@ from src.twitchToken import TwitchToken
 REPLAY_PARENT = "@reply-parent-msg-id"
 
 class CommandHandler():
-    def Pong(ws, _):
+    def Pong(ws, _, **kwargs):
         print("Ping received, sending pong...")
         ws.send("PONG :tmi.twitch.tv")
 

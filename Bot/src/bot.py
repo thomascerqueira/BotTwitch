@@ -26,6 +26,8 @@ class Bot():
                                     on_error=self.onError,
                                     on_close=self.onClose)
         self.ws.on_open = self.onOpen
+    
+    def run(self):
         self.ws.run_forever()
     
     def onOpen(self, socket):
