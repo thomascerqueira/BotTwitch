@@ -14,3 +14,4 @@ class Print(SpecialCommand):
         from src.commands.commandHandler import CommandHandler
         
         CommandHandler.replyWithUsername(ws, self.messageToPrint, kwargs["username"])
+        return self.messageToPrint

@@ -3,6 +3,7 @@ import threading
 from werkzeug.routing import Map, Rule
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from src.logger.logger import logger
 
 app = Flask(__name__)
 CORS(app)
@@ -11,11 +12,11 @@ CORS(app)
 def token():
     import src.codeHandler
     
-    print("REQUEST RECU")
+    logger.info("REQUEST GOT")
     code = request.args.get("code")
     
     if code:
-        print("CODE RECUPERE")
+        logger.info("CODE GOT")
         src.codeHandler.tokenGet = code
     
     with src.codeHandler.lock:
@@ -34,11 +35,11 @@ class ServerThread(threading.Thread):
         self.shutdown_event = threading.Event()
 
     def run(self):
-        print("Starting server in a thread")
+        logger.debug("Starting server in a thread")
         self.server.serve_forever()
 
     def shutdown(self, hard=False):
-        print("Shutting down server")
+        logger.debug("Shutting down server")
         self.server.shutdown()
         self.shutdown_event.set()
         
