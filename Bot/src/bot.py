@@ -4,9 +4,11 @@ from src.parserTwitch import ParserTwitch
 import os
 import websocket
 
+from src.logger.logger import logger
+
 class Bot():
     def __init__(self, twitchToken: TwitchToken, fileCommand, osuToken: OsuToken = None):
-        print("Initialisation du bot")
+        logger.info("Starting bot...")
         self.twitchToken: TwitchToken = twitchToken
         self.osuToken: OsuToken = osuToken
         self.parser: ParserTwitch = ParserTwitch()
@@ -19,8 +21,10 @@ class Bot():
         
         self.loadCommandFromFile()
         self.connectToTwitch()
+        logger.info("Bot started")
 
     def connectToTwitch(self):
+        logger.info("Connecting to the Twitch chat...")
         self.ws = websocket.WebSocketApp(self.url,
                                     on_message=self.onMessage,
                                     on_error=self.onError,
@@ -31,14 +35,14 @@ class Bot():
         self.ws.run_forever()
     
     def onOpen(self, socket):
-        print("Connexion au chat Twitch ouverte")
+        logger.info("Connexion to the Twitch chat opened")
         socket.send(f"PASS oauth:{self.twitchToken.tokens}")
         socket.send(f"NICK {self.twitchToken.Nick}")
         socket.send(f"JOIN #{self.twitchToken.Channel}")
         socket.send(f"CAP REQ :twitch.tv/commands twitch.tv/tags")
     
     def sendMessage(self, socket, message):
-        print(f"Envoi du message: {message}")
+        logger.debug(f"Sending message: {message}")
         message = f"PRIVMSG #{self.twitchToken.Channel} :{message}"
         socket.send(message)
         
@@ -48,7 +52,7 @@ class Bot():
         if src.command.commandesFunctions.get(message["command"]):
             src.command.commandesFunctions[message["command"]](self.ws, message, osuToken=self.osuToken, bot=self)
         else:
-            print(f"Commande {message['command']} non reconnue")
+            logger.error(f"Command {message['command']} not found")
     
     def onMessage(self, socket, message):
         messages = self.parser.parseMessages(message)
@@ -56,19 +60,21 @@ class Bot():
             self.dispatchCommand(message)
         
     def onError(self, socket, error):
-        print(f"Erreur dans la connexion au chat Twitch: {error}")
+        logger.error(f"Error in chat Twitch: {error}")
 
     
     def onClose(self, socket, close_status_code, close_msg):
-        print("Connexion au chat Twitch fermée")
+        logger.warning(f"Connexion to the Twitch chat closed: {close_status_code} {close_msg}")
         
     def loadCommandFromFile(self):
         import json
         import src.command
         import src.utils.commandsHelper as commandsHelper
         
+        logger.info(f"Loading command from file {self.fileCommand}")
+        
         if not self.fileCommand:
-            print("Aucun fichier de commande à charger")
+            logger.error("No file command to load")
             return
         
         with open(self.fileCommand, "r") as file:
@@ -76,10 +82,10 @@ class Bot():
             
             for command in data:
                 if command in src.command.specialCommand:
-                    print(f"La commande {command} est déjà chargée")
+                    logger.debug(f"Command {command} already loaded")
                     continue
                 
-                print(f"Chargement de la commande {command}")
+                logger.debug(f"Loading command {command}")
                 value = data[command]
                 
                 module = commandsHelper.module_load(value["file"])
@@ -87,7 +93,7 @@ class Bot():
                 dataAdded = value.get("data", {})
                 src.command.specialCommand[command] = classModule(**dataAdded)
                 
-                print(f"Chargement de la commande {command} réussi")
+                logger.debug(f"Command {command} loaded")
                 
     def reloadCommand(self):
         import src.command

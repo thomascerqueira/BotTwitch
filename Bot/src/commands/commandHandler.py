@@ -1,10 +1,11 @@
 from src.twitchToken import TwitchToken
+from src.logger.logger import logger
 
 REPLAY_PARENT = "@reply-parent-msg-id"
 
 class CommandHandler():
     def Pong(ws, _, **kwargs):
-        print("Ping received, sending pong...")
+        logger.debug("Ping received, sending pong...")
         ws.send("PONG :tmi.twitch.tv")
 
     def replyWithUsername(ws, message, username):
@@ -23,10 +24,11 @@ class CommandHandler():
         import src.command as Command
         
         if Command.specialCommand.get(command):
+            logger.info(f"Executing special command {command} from {kwargs.get('username', 'unknown')}: {kwargs.get('id', 'no_id')}")
             try:
                 Command.specialCommand[command].execute(ws, message, **kwargs)
             except Exception as e:
-                print(f"Une erreur s'est produite: {e}")
+                logger.error(f"An error append: {e}")
                 CommandHandler.sendSimpleMessage(ws, "Une erreur s'est produite, dis le à un modérateur !")
     
     def Privmsg(ws, info, **kwargs):
@@ -36,7 +38,7 @@ class CommandHandler():
         badges = info["badges"]
         bot = kwargs.get("bot", None)
         
-        print(f"Message reçu: {info['message']}")
+        # print(f"Message reçu: {info['message']}")
         if (message.startswith(TwitchToken.Prefix)):
             specialCommand = message.split(" ")[0]
 
@@ -46,4 +48,5 @@ class CommandHandler():
                                                   username=username,
                                                   osuToken=kwargs["osuToken"],
                                                   badges=badges,
-                                                  bot=bot)
+                                                  bot=bot,
+                                                  id=id)
