@@ -1,4 +1,4 @@
-
+from src.logger.logger import logger
 
 class ParserTwitch():
     def __init__(self):
@@ -17,6 +17,7 @@ class ParserTwitch():
     def parse(self, message):
         # print(f"Message avant de split {message}")
         if message.startswith("PING"):
+            logger.warning("PING received from Twitch, awaiting PONG...")
             result = {"command": "PING"}
             return result
         
