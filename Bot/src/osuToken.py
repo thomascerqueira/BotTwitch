@@ -46,6 +46,7 @@ class OsuToken(TokenHandler):
             )
         
         if (r.status_code == 401):
+            logger.info(f"Token expired, refreshing it")
             return self.makeRequest(type, url, headers, params, data)
         
         if (r.status_code != 200):
