@@ -1,6 +1,7 @@
 import os
 from src.tokenHandler import TokenHandler
 import requests
+from src.logger.logger import logger
 
 class OsuToken(TokenHandler):
     Secret = ""
@@ -11,7 +12,7 @@ class OsuToken(TokenHandler):
     def __init__(self, username, id=False):
         for env in OsuToken.envNeeded:
             if not os.getenv(env):
-                print(f"Environment variable {env} is missing")
+                logger.error(f"Environment variable {env} not found")
                 exit(-1)
         
         super().__init__(
@@ -45,7 +46,7 @@ class OsuToken(TokenHandler):
             )
         
         if (r.status_code != 200):
-            print(r.text)
+            logger.error(f"Error in request: {r.status_code} {r.text}")
         return r
 
         

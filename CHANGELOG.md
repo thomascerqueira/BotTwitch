@@ -1,3 +1,7 @@
+# [1.2.0] - 20/03/2024
+## BOT:
+    - Use logger instead of print
+
 # [1.0.0] - 18/03/2024
 # - Initial release
 ## BOT:
