@@ -8,7 +8,7 @@ from src.logger.logger import logger
 
 class Bot():
     def __init__(self, twitchToken: TwitchToken, fileCommand, osuToken: OsuToken = None):
-        logger.info("Starting bot...")
+        logger.info("Initializing bot")
         self.twitchToken: TwitchToken = twitchToken
         self.osuToken: OsuToken = osuToken
         self.parser: ParserTwitch = ParserTwitch()
@@ -21,7 +21,7 @@ class Bot():
         
         self.loadCommandFromFile()
         self.connectToTwitch()
-        logger.info("Bot started")
+        logger.info("Bot initialized")
 
     def connectToTwitch(self):
         logger.info("Connecting to the Twitch chat...")
@@ -32,6 +32,7 @@ class Bot():
         self.ws.on_open = self.onOpen
     
     def run(self):
+        logger.info("Running the bot")
         self.ws.run_forever()
     
     def onOpen(self, socket):
