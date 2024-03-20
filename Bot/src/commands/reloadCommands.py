@@ -1,5 +1,6 @@
 from src.commands.specialCommand import SpecialCommand
 from src.twitchToken import TwitchToken
+from src.logger.logger import logger
 
 class ReloadCommand(SpecialCommand):
     def __init__(self, **kwargs):
@@ -16,7 +17,7 @@ class ReloadCommand(SpecialCommand):
         bot: src.bot.Bot = kwargs.get("bot", None)
         
         if not bot:
-            print("Bot not found")
+            logger.error("Bot not found")
             return
         
         badges = kwargs.get("badges", "")

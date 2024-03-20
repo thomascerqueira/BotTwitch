@@ -45,7 +45,7 @@ class Logger():
             return super().format(record).replace("\033[1;32m", "").replace("\033[1;0m", "")
         
 
-    def __init__(self, name):
+    def __init__(self, name, noFile=False):
         if hasattr(self, "logger"):
             return
         
@@ -60,8 +60,20 @@ class Logger():
         if not os.path.exists("log"):
             os.makedirs("log")
 
-        self.addFileHandler(f"log/AutomateTest.log")
+        if not noFile:
+            self.addFileHandler(f"log/{name}.log")
         self.addStreamHandler()
+        
+    def getLoggerFromName(self, name):
+        """
+        Return a logger from its name
+        
+        :param name: The name of the logger to return
+        """
+        if name not in self.loggers:
+            raise Exception(f"No logger with name {name}")
+        
+        return self.loggers.get(name)
         
     def addStreamHandler(self, logger_name=None):
         """
@@ -75,7 +87,9 @@ class Logger():
         stream_handler = logging.StreamHandler(sys.stdout)
         stream_handler.setLevel(self.DEBUG_LEVEL)
         stream_handler.setFormatter(self.LevelFormatter("%(asctime)s - %(name)s - [%(levelname)s] - %(message)s"))
-        self.loggers[logger_name].addHandler(stream_handler)
+        
+        logger = self.getLoggerFromName(logger_name)
+        logger.addHandler(stream_handler)
 
 
     def addFileHandler(self, filename, logger_name=None):
@@ -90,7 +104,9 @@ class Logger():
         file_handler = logging.FileHandler(filename)
         file_handler.setLevel(self.DEBUG_LEVEL)
         file_handler.setFormatter(self.NormalFormatter("%(asctime)s - %(name)s - [%(levelname)s] - %(message)s"))
-        self.loggers[logger_name].addHandler(file_handler)
+        
+        logger = self.getLoggerFromName(logger_name)
+        logger.addHandler(file_handler)
         
     def removeFileHandler(self, filename, logger_name=None):
         """
@@ -102,9 +118,12 @@ class Logger():
         if logger_name is None:
             logger_name = self.baseLoggerName
 
-        for handler in self.loggers[logger_name].handlers:
+        logger = self.getLoggerFromName(logger_name)
+
+        for handler in logger.handlers:
             if isinstance(handler, logging.FileHandler) and handler.baseFilename == filename:
-                self.loggers[logger_name].removeHandler(handler)
+                logger.removeHandler(handler)
+                break
 
     def debug(self, message, logger_name=None):
         """
@@ -112,7 +131,9 @@ class Logger():
         """
         if logger_name is None:
             logger_name = self.baseLoggerName
-        self.loggers[logger_name].debug(message)
+            
+        logger = self.getLoggerFromName(logger_name)
+        logger.debug(message)
 
     def info(self, message, logger_name=None):
         """
@@ -120,7 +141,9 @@ class Logger():
         """
         if logger_name is None:
             logger_name = self.baseLoggerName
-        self.loggers[logger_name].info(message)
+            
+        logger = self.getLoggerFromName(logger_name)
+        logger.info(message)
 
     def warning(self, message, logger_name=None):
         """
@@ -128,7 +151,9 @@ class Logger():
         """
         if logger_name is None:
             logger_name = self.baseLoggerName
-        self.loggers[logger_name].warning(message)
+        
+        logger = self.getLoggerFromName(logger_name)
+        logger.warning(message)
 
     def error(self, message, logger_name=None):
         """
@@ -136,7 +161,9 @@ class Logger():
         """
         if logger_name is None:
             logger_name = self.baseLoggerName
-        self.loggers[logger_name].error(message)
+        
+        logger = self.getLoggerFromName(logger_name)
+        logger.error(message)
 
     def critical(self, message, logger_name=None):
         """
@@ -144,17 +171,21 @@ class Logger():
         """
         if logger_name is None:
             logger_name = self.baseLoggerName
-        self.loggers[logger_name].critical(message)
+        
+        logger = self.getLoggerFromName(logger_name)
+        logger.critical(message)
     
     def success(self, message, logger_name=None):
         """
-        Print a success message
+        Print a success message this may have some problem with the color on some terminal and in the log file
         """
         if logger_name is None:
             logger_name = self.baseLoggerName
-        self.loggers[logger_name].info(f"\033[1;32m{message}\033[1;0m")
         
-    def addLogger(self, name):
+        logger = self.getLoggerFromName(logger_name)
+        logger.info(f"\033[1;32m{message}\033[1;0m")
+        
+    def addLogger(self, name, noFile=False):
         """
         This method allow to add a new logger to the class
         
@@ -167,7 +198,9 @@ class Logger():
         
         self.loggers[name] = logging.getLogger(name)
         self.loggers[name].setLevel(self.DEBUG_LEVEL)
-        self.addFileHandler(f"log/{name}.log", name)
+        
+        if not noFile:
+            self.addFileHandler(f"log/{name}.log", name)
         self.addStreamHandler(name)
 
 def log_decorator(logger, class_name):

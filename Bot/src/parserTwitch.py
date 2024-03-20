@@ -15,7 +15,7 @@ class ParserTwitch():
         return dictionnary
     
     def parse(self, message):
-        print(f"Message avant de split {message}")
+        # print(f"Message avant de split {message}")
         messages = message.strip().split(":")
         # print("Messages splités: ")
         result = {}

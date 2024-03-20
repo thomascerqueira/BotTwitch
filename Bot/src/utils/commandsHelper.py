@@ -1,3 +1,5 @@
+from src.logger.logger import logger
+
 def module_load(module_path):
         import importlib.util
         import sys
@@ -8,10 +10,10 @@ def module_load(module_path):
             module = importlib.util.module_from_spec(spec)
             sys.modules[module_name] = module
             spec.loader.exec_module(module)
-            print(f"Module {module_name} chargé avec succès.")
+            logger.info(f"Module {module_name} chargé avec succès.")
             return module
         except Exception as e:
-            print(f"Impossible de charger le module {module_path}. Erreur : {e}")
+            logger.error(f"Impossible de charger le module {module_path}. Erreur : {e}")
             
 def getClassFromModule(module):
     print_help_class = None
