@@ -17,15 +17,15 @@ class PrintHelp(SpecialCommand):
         keys.remove("!reload")
 
         commands = ", ".join(keys)
+        output = f"Commands disponibles: {commands}"
         
         if len(splitted) == 1:
-            CommandHandler.replyWithUsername(ws, f"Commands disponibles: {commands}", kwargs["username"])
-            return
+            return CommandHandler.replyWithUsername(ws, output, kwargs["username"])
 
         commandToHelp = message.split(" ")[1]
         commandToHelp = commandToHelp if commandToHelp.startswith(TwitchToken.Prefix) else TwitchToken.Prefix + commandToHelp
 
         if commandToHelp and commandToHelp in Command.specialCommand:
-            CommandHandler.replyWithUsername(ws, Command.specialCommand[commandToHelp].help(), kwargs["username"])
+            return CommandHandler.replyWithUsername(ws, Command.specialCommand[commandToHelp].help(), kwargs["username"])
         else:
-            CommandHandler.replyWithUsername(ws, f"Commands disponibles: {commands}", kwargs["username"])
+            return CommandHandler.replyWithUsername(ws, output, kwargs["username"])

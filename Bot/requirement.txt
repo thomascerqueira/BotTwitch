@@ -3,3 +3,7 @@ requests
 websocket-client
 testresources
 six
+werkzeug
+flask
+flask_cors
+betterpythonlogger

@@ -1,6 +1,9 @@
 import os
 import requests
 import webbrowser
+from time import sleep
+
+from src.logger.logger import logger
 
 class TokenHandler:
     def __init__(self, url_token, url_authorize, scope, client_id, client_secret, redirect_uri, name):
@@ -14,14 +17,28 @@ class TokenHandler:
         self.name = name
         self.tokens = ""
         self.refresh_token = ""
-
-        self.getToken()
+        self.maxTry = 120
     
     def getCode(self):
+        import src.codeHandler
         url = f"{self.url_authorize}?client_id={self.client_id}&redirect_uri={self.redirect_uri}&response_type=code&scope={self.scope}"
 
         webbrowser.open(url)
-        self.authorization_code = input(f"Enter the code for {self.name}: ")
+        
+        nbTry = 0
+        while nbTry < self.maxTry:
+            with src.codeHandler.lock:
+                self.authorization_code = src.codeHandler.tokenGet
+            if self.authorization_code:
+                with src.codeHandler.lock:
+                    src.codeHandler.tokenGet = ""
+                return
+            nbTry += 1
+            sleep(1)
+        
+        if nbTry == self.maxTry:
+            raise Exception(f"Error while getting {self.name} code")
+            
         
     def refreshToken(self):
         params = {
@@ -33,8 +50,8 @@ class TokenHandler:
         r = requests.post(self.url_token, data=params)
         
         if (r.status_code != 200):
-                print(f"Error while refreshing {self.name} token")
-                print(r.status_code)
+                logger.error(f"Error while refreshing {self.name} token")
+                logger.error(f"Error: {r.status_code} {r.text}")
                 exit(-1)
         self.refresh_token = r.json()["refresh_token"]
         self.tokens = r.json()['access_token']
@@ -57,7 +74,7 @@ class TokenHandler:
 
     def getToken(self):
         if (self.loadRefreshToken()):
-            print("Refresh token loaded")
+            logger.info(f"Loading {self.name} token from file")
             self.refreshToken()
         else:
             self.getCode()
@@ -71,10 +88,10 @@ class TokenHandler:
             r = requests.post(self.url_token, data=params)
             
             if (r.status_code != 200):
-                print(f"Error while getting {self.name} token you can find information in the file {self.name}_token_error.txt\nExiting...")
+                logger.error(f"Error while getting {self.name} token you can find information in the file {self.name}_token_error.txt\nExiting...")
                 with open(f"{self.name}_token_error.txt", "w") as f:
                     f.write(r.text)
-                print(r.status_code)
+                logger.error(r.status_code)
                 exit(-1)
             self.refresh_token = r.json()["refresh_token"]
             self.tokens = r.json()['access_token']

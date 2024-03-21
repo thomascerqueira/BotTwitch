@@ -2,6 +2,10 @@ from dotenv import load_dotenv
 from src.twitchToken import TwitchToken
 from src.bot import Bot
 import argparse
+from src.serverThread import server
+from time import sleep
+
+from src.logger.logger import logger
 
 load_dotenv()
 
@@ -15,17 +19,48 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    print("Lancement du bot")
+    server.start()
     twitchToken = TwitchToken()
-    print("Token Twitch récupéré")
+    error = []
+    
+    try:
+        logger.info("Getting twitch token")
+        twitchToken.getToken()
+        logger.info("Twitch token loaded")
+    except Exception as e:
+        error.append(e)
+    
     osuToken = None
-    
     osuUsername = args.osu
-    
+
     if osuUsername:
         if osuUsername == "":
-            print("The osu username is missing")
+            logger.error("You have to provide a username to use osu api")
             exit(-1)
+        actualToken = "osu"
         from src.osuToken import OsuToken
         osuToken = OsuToken(osuUsername, args.osuId)
+        
+        sleep(1)
+        try:
+            logger.info("Getting osu token")
+            osuToken.getToken()
+            logger.info("Osu token loaded")
+        except Exception as e:
+            error.append(e)
+    
+    if len(error) > 0:
+        for e in error:
+            logger.error(e)
+            
+        server.shutdown()
+        server.join()
+        exit(-1)
+        
+    
     bot = Bot(twitchToken, osuToken=osuToken, fileCommand=args.commandFile)
+    
+    logger.info("Shutting down the server that was used to get the token")
+    server.shutdown()
+    
+    bot.run()

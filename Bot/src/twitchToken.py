@@ -1,6 +1,8 @@
 from src.tokenHandler import TokenHandler
 import os
 
+from src.logger.logger import logger
+
 class TwitchToken(TokenHandler):
     Nick = ""
     Channel = ""
@@ -11,7 +13,7 @@ class TwitchToken(TokenHandler):
     def __init__(self):
         for env in TwitchToken.envNeeded:
             if not os.getenv(env):
-                print(f"Environment variable {env} is missing")
+                logger.error(f"Environment variable {env} is missing")
                 exit(-1)
         
         super().__init__(
