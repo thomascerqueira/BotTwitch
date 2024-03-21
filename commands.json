@@ -10,5 +10,13 @@
             "message": "Test command",
             "helpMessage": "Print a test message"
         }
+    },
+    "!test1": {
+        "description": "Dragon force cest fort",
+        "file": "/home/thomas/perso/BotTwitch/Bot/src/commands/print.py",
+        "data": {
+            "message": "DE FOU",
+            "helpMessage": "tkt mon reuf"
+        }
     }
 }

@@ -1,3 +1,7 @@
+# [1.4.0] - 21/03/2024
+## SERVER:
+    - Can now add/remove/patch commands
+
 # [1.3.0] - 21/03/2024
 ## BOT:
     - Use BetterPythonLogger library
