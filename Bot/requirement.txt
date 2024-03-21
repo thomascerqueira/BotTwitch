@@ -6,3 +6,4 @@ six
 werkzeug
 flask
 flask_cors
+betterpythonlogger

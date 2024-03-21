@@ -1,3 +1,3 @@
-from .Logger import Logger
+from BetterPythonLogger import Logger
 
-logger = Logger("Bot")
+logger = Logger.Logger("Bot")
