@@ -26,5 +26,5 @@ jobs:
       - name: Create tag
         run: |
           TAG=${{ steps.get_version_tag.outputs.TAG }}
-          git tag "$TAG"
-          git push origin --tags
+          git tag -f "$TAG"
+          git push origin -f --tags
