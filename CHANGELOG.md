@@ -1,3 +1,7 @@
+# [1.3.0] - 21/03/2024
+## BOT:
+    - Use BetterPythonLogger library
+
 # [1.2.0] - 20/03/2024
 ## BOT:
     - Use logger instead of print
