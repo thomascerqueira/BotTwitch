@@ -1,6 +1,7 @@
 import os
 import requests
 import webbrowser
+from time import sleep
 
 from src.logger.logger import logger
 
@@ -16,14 +17,28 @@ class TokenHandler:
         self.name = name
         self.tokens = ""
         self.refresh_token = ""
-
-        self.getToken()
+        self.maxTry = 120
     
     def getCode(self):
+        import src.codeHandler
         url = f"{self.url_authorize}?client_id={self.client_id}&redirect_uri={self.redirect_uri}&response_type=code&scope={self.scope}"
 
         webbrowser.open(url)
-        self.authorization_code = input(f"Enter the code for {self.name}: ")
+        
+        nbTry = 0
+        while nbTry < self.maxTry:
+            with src.codeHandler.lock:
+                self.authorization_code = src.codeHandler.tokenGet
+            if self.authorization_code:
+                with src.codeHandler.lock:
+                    src.codeHandler.tokenGet = ""
+                return
+            nbTry += 1
+            sleep(1)
+        
+        if nbTry == self.maxTry:
+            raise Exception(f"Error while getting {self.name} code")
+            
         
     def refreshToken(self):
         params = {

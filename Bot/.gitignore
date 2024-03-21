@@ -4,4 +4,6 @@ refresh_token.txt
 node
 .DS_Store
 tokens
+environement
+*_error.txt
 log

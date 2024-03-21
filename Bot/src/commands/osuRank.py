@@ -26,4 +26,5 @@ class OsuRank(SpecialCommand):
                     "global": statistics.get("global_rank"),
                     "country": statistics.get("country_rank"),
                 }
-                CommandHandler.replyWithUsername(ws, f"Le rank de {TwitchToken.Channel} est {rank.get('global')} global et {rank.get('country')} en {country}", kwargs["username"])
+                answer = f"Le rank de {TwitchToken.Channel} est {rank.get('global')} global et {rank.get('country')} en {country}"
+                return CommandHandler.replyWithUsername(ws, f"{answer}", kwargs["username"])

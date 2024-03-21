@@ -27,3 +27,5 @@ class ReloadCommand(SpecialCommand):
         
         if "broadcaster" in badges:
             bot.reloadCommand()
+            return "Command reloaded"
+        return "Not allowed to do that"

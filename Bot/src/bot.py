@@ -8,7 +8,7 @@ from src.logger.logger import logger
 
 class Bot():
     def __init__(self, twitchToken: TwitchToken, fileCommand, osuToken: OsuToken = None):
-        logger.info("Starting bot...")
+        logger.info("Initializing bot")
         self.twitchToken: TwitchToken = twitchToken
         self.osuToken: OsuToken = osuToken
         self.parser: ParserTwitch = ParserTwitch()
@@ -21,13 +21,18 @@ class Bot():
         
         self.loadCommandFromFile()
         self.connectToTwitch()
+        logger.info("Bot initialized")
 
     def connectToTwitch(self):
+        logger.info("Connecting to the Twitch chat...")
         self.ws = websocket.WebSocketApp(self.url,
                                     on_message=self.onMessage,
                                     on_error=self.onError,
                                     on_close=self.onClose)
         self.ws.on_open = self.onOpen
+    
+    def run(self):
+        logger.info("Running the bot")
         self.ws.run_forever()
     
     def onOpen(self, socket):
@@ -66,6 +71,8 @@ class Bot():
         import json
         import src.command
         import src.utils.commandsHelper as commandsHelper
+        
+        logger.info(f"Loading command from file {self.fileCommand}")
         
         if not self.fileCommand:
             logger.error("No file command to load")
