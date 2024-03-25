@@ -1,34 +1,44 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import axios from 'axios'
 import { SERVER_URL } from './config'
-import Commands from './Command'
-import CreateCommand from './CreateCommand'
+import Commands from './Commands'
+import { AddCommand } from './Widgets/addCommands/AddCommand'
+import { CommandsProvider } from './Provider'
 
 function App() {
   const [commands, setCommands] = React.useState({})
-  const [functions, setFunctions] = React.useState({})
+
+  const refreshCommands = useCallback(() => {
+    axios.get(SERVER_URL + "commands").then((res) => {
+      setCommands(res.data)
+    })
+  }, [setCommands])
 
   React.useEffect(() => {
-    axios.get(SERVER_URL + "command").then((res) => {
-      setCommands(res.data.commands)
-    })
+    refreshCommands()
   }, [])
-
-  React.useEffect(() => {
-    axios.get(SERVER_URL + "functions").then((res) => {
-      setFunctions(res.data.functions)
-    })
-  }, [])
-
 
   return (
-    <>
+    <CommandsProvider.Provider value={
+      {
+        commands,
+        setCommands
+      }
+    }>
       <div>
-        On est la
-        <Commands commands={commands}/>
-        <CreateCommand availableFunctions={functions}/>
+        <Commands/>
+        <button onClick={() => {
+          axios.get(SERVER_URL + "commands").then((res) => {
+            setCommands(res.data)
+          })
+        }}>
+          Refresh
+        </button>
+        <AddCommand
+          refreshCommands={refreshCommands}
+        />
       </div>
-    </>
+    </CommandsProvider.Provider>
   )
 }
 

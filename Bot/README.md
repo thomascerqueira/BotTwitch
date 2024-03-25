@@ -46,3 +46,9 @@ python main.py -i id
 The code will be after code= until the end generally.
 
 ![alt text](doc/codeOsu.png)
+
+## Commands
+
+Commands can be found in the directory
+
+```Bot/src/commands```, you can add, remove or patch commands by adding a file in this directory and adding in the `command.json` file or by using the combo web-ui/server.
