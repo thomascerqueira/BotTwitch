@@ -1,3 +1,7 @@
+# [1.5.1] - 25/03/2024
+## DOCUMENTATION
+    - Update README.md
+
 # [1.5.0] - 21/03/2024
 ## WEB-UI:
     - Can now add/remove/patch commands by adding file

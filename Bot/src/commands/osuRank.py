@@ -7,7 +7,7 @@ class OsuRank(SpecialCommand):
         pass
     
     def help(self):
-        return "!osu: Affiche le rank osu de ton streamer"
+        return "Affiche le rank osu de ton streamer"
     
     def execute(self, ws, message, **kwargs):
         from src.commands.commandHandler import CommandHandler
