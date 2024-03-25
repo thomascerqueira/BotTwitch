@@ -16,6 +16,8 @@ class Bot():
         self.ws = None
         self.url = f"wss://irc-ws.chat.twitch.tv:443"
         self.fileCommand = fileCommand
+        self.path = os.path.dirname(os.path.abspath(__file__))
+        self.commandPath = os.path.join(self.path, "commands")
         
         self.baseCommands = ["!reload", "!help"]
         
@@ -87,14 +89,20 @@ class Bot():
                     continue
                 
                 logger.debug(f"Loading command {command}")
-                value = data[command]
-                
-                module = commandsHelper.module_load(value["file"])
-                classModule = commandsHelper.getClassFromModule(module)
-                dataAdded = value.get("data", {})
-                src.command.specialCommand[command] = classModule(**dataAdded)
-                
-                logger.debug(f"Command {command} loaded")
+                try:
+                    value = data[command]
+
+                    if not value["file"].startswith(self.commandPath):
+                        value["file"] = os.path.join(self.commandPath, value["file"])
+
+                    module = commandsHelper.module_load(value["file"])
+                    classModule = commandsHelper.getClassFromModule(module)
+                    dataAdded = value.get("data", {})
+                    src.command.specialCommand[command] = classModule(**dataAdded)
+
+                    logger.debug(f"Command {command} loaded")
+                except Exception as e:
+                    logger.error(f"Error loading command {command}: {e}")
                 
     def reloadCommand(self):
         import src.command

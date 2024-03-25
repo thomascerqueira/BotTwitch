@@ -1,3 +1,9 @@
+# [1.5.0] - 21/03/2024
+## WEB-UI:
+    - Can now add/remove/patch commands by adding file
+## BOT:
+    - The directory of the commands is now all the time Bot/src/commands
+
 # [1.4.0] - 21/03/2024
 ## SERVER:
     - Can now add/remove/patch commands

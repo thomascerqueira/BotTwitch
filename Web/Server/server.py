@@ -84,6 +84,7 @@ class Server():
         with open(self.file_command, "r") as f:
             commands = json.load(f)
 
+        command = f"!{command}" if not command.startswith("!") else command
         if command in commands:
             return jsonify({"error": "Command already exists"}), 400
         
